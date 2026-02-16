@@ -18,14 +18,21 @@ h1 { color:#222 }
 .section { max-width:800px; margin:40px auto; padding:20px; background:#fff; border-radius:15px; box-shadow:0 4px 10px rgba(0,0,0,0.05) }
 .social-bar { background:#000; padding:10px; display:flex; justify-content:center; gap:20px }
 .social-bar img { width:32px }
+.break-section img { max-width:300px; border-radius:12px; box-shadow:0 4px 10px rgba(0,0,0,0.1); margin: 0 auto; display:block; }
 </style>
 </head>
 <body>
 
 <div class="social-bar">
-  <a href="https://www.youtube.com/@SioTime" target="_blank"><img src="https://upload.wikimedia.org/wikipedia/commons/0/09/YouTube_full-color_icon_%282017%29.svg"></a>
-  <a href="https://www.instagram.com/siotime.cards/" target="_blank"><img src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png"></a>
-  <a href="https://x.com/Siotimecards" target="_blank"><img src="https://upload.wikimedia.org/wikipedia/commons/5/53/X_logo_2023_original.svg"></a>
+  <a href="https://www.youtube.com/@SioTime" target="_blank">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/0/09/YouTube_full-color_icon_%282017%29.svg">
+  </a>
+  <a href="https://www.instagram.com/siotime.cards/" target="_blank">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png">
+  </a>
+  <a href="https://x.com/Siotimecards" target="_blank">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/X_logo_2023_original.svg">
+  </a>
 </div>
 
 <h1>🏈 Inscriptions NFL Break – Siotime</h1>
@@ -33,7 +40,7 @@ h1 { color:#222 }
 
 <div class="break-section">
  <h2>📦 Le Break en image</h2>
- <img src="BreakNFL.png" alt="Break NFL Siotime" style="max-width:300px; border-radius:12px; box-shadow:0 4px 10px rgba(0,0,0,0.1); margin: 0 auto; display:block;">
+ <img src="BreakNFL.png" alt="Break NFL Siotime">
 </div>
 
 <div class="teams" id="teams"></div>
@@ -54,9 +61,10 @@ h1 { color:#222 }
 </div>
 
 <script>
-const ENDPOINT = "https://script.google.com/macros/s/AKfycbypKOjqoK_4wLUQ9UZe0AhSx4e9f5_wWc30o166RwFtPF9UFtMoN7y-85ULJaGQdLYw/exec";
+const ENDPOINT = "https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec"; // Remplace par ton script ID
 const deadline = new Date(2026, 11, 22, 20, 0, 0);
 
+// Logos fiables pour GitHub Pages
 const teams = [
   { name:"Arizona Cardinals", price:6, logo:"https://upload.wikimedia.org/wikipedia/en/0/01/Arizona_Cardinals_logo.svg" },
   { name:"Atlanta Falcons", price:6, logo:"https://upload.wikimedia.org/wikipedia/en/c/c6/Atlanta_Falcons_logo.svg" },
@@ -89,47 +97,43 @@ const teams = [
   { name:"Seattle Seahawks", price:7, logo:"https://upload.wikimedia.org/wikipedia/commons/7/7c/Seattle_Seahawks_logo.svg" },
   { name:"Tampa Bay Buccaneers", price:7, logo:"https://upload.wikimedia.org/wikipedia/commons/c/c0/Tampa_Bay_Buccaneers_logo.svg" },
   { name:"Tennessee Titans", price:6, logo:"https://upload.wikimedia.org/wikipedia/commons/2/28/Tennessee_Titans_logo.svg" },
-  { name:"Washington Commanders", price:7, logo:"https://upload.wikimedia.org/wikipedia/commons/6/6e/Washington_Commanders_logo.svg" },
+  { name:"Washington Commanders", price:7, logo:"https://www.pngall.com/washington-commanders-logo-png/download/122260/" }
 ];
 
 const teamsDiv = document.getElementById("teams");
 const recapDiv = document.getElementById("recap");
 const timerDiv = document.getElementById("timer");
 
-function renderTeams(taken=[]) {
+function renderTeams(taken=[]){
   teamsDiv.innerHTML="";
   teams.forEach(t=>{
-    const d = document.createElement("div");
-    d.className = "team" + (taken.includes(t.name) ? " taken" : "");
-    d.innerHTML = `<img src="${t.logo}" onerror="this.src='https://via.placeholder.com/70'"><p>${t.name}</p><p class="price">${t.price}€</p>`;
-    d.onclick = ()=>selectTeam(t);
+    const d=document.createElement("div");
+    d.className="team"+(taken.includes(t.name)?" taken":"");
+    d.innerHTML=`<img src="${t.logo}" onerror="this.src='https://via.placeholder.com/70'"><p>${t.name}</p><p class="price">${t.price}€</p>`;
+    d.onclick=()=>selectTeam(t);
     teamsDiv.appendChild(d);
   });
 }
 
 async function selectTeam(team){
-  const pseudo = prompt("Pseudo :"); if(!pseudo) return;
-  const social = prompt("Réseau social :"); if(!social) return;
+  const pseudo=prompt("Pseudo :"); if(!pseudo) return;
+  const social=prompt("Réseau social :"); if(!social) return;
   if(!confirm(`Confirmer ${team.name} (${team.price}€)`)) return;
-
-  const res = await fetch(ENDPOINT, {
-    method: "POST",
-    body: JSON.stringify({ pseudo, social, team: team.name })
-  });
-  const data = await res.json();
+  const res=await fetch(ENDPOINT,{method:"POST",body:JSON.stringify({pseudo,social,team:team.name})});
+  const data=await res.json();
   alert(data.status==="ok"?"Inscription validée":"Erreur : "+(data.message||""));
   loadData();
 }
 
 async function loadData(){
-  try {
-    const takenTeams = await (await fetch(ENDPOINT+"?mode=taken")).json();
+  try{
+    const takenTeams=await (await fetch(ENDPOINT+"?mode=taken")).json();
     renderTeams(takenTeams);
-    const recapData = await (await fetch(ENDPOINT+"?mode=recap")).json();
+    const recapData=await (await fetch(ENDPOINT+"?mode=recap")).json();
     recapDiv.innerHTML="";
     recapData.forEach(e=>{
-      const team = teams.find(x=>x.name===e.team);
-      if(team) recapDiv.innerHTML += `<div class="recap-item"><img src="${team.logo}" onerror="this.src='https://via.placeholder.com/30'"><b>${e.pseudo}</b> (${team.name})</div>`;
+      const team=teams.find(x=>x.name===e.team);
+      if(team) recapDiv.innerHTML+=`<div class="recap-item"><img src="${team.logo}" onerror="this.src='https://via.placeholder.com/30'"><b>${e.pseudo}</b> (${team.name})</div>`;
     });
   } catch(err){
     console.error(err);
@@ -137,16 +141,16 @@ async function loadData(){
 }
 
 function updateTimer(){
-  const diff = deadline - new Date();
-  if(diff<=0){ timerDiv.innerHTML="⛔ Inscriptions fermées"; return; }
-  const h = Math.floor(diff/36e5), m = Math.floor(diff/6e4%60), s = Math.floor(diff/1e3%60);
-  timerDiv.innerHTML = `⏳ Fin dans ${h}h ${m}m ${s}s`;
+  const diff=deadline-new Date();
+  if(diff<=0){timerDiv.innerHTML="⛔ Inscriptions fermées";return;}
+  const h=Math.floor(diff/36e5), m=Math.floor(diff/6e4%60), s=Math.floor(diff/1e3%60);
+  timerDiv.innerHTML=`⏳ Fin dans ${h}h ${m}m ${s}s`;
 }
 
-loadData();
-updateTimer();
+loadData(); updateTimer();
 setInterval(loadData,15000);
 setInterval(updateTimer,1000);
 </script>
+
 </body>
 </html>
