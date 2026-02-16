@@ -11,10 +11,10 @@ h1 { color:#222 }
 .team { width:140px; padding:10px; border:1px solid #ccc; border-radius:12px; background:white; cursor:pointer }
 .team:hover { background:#f2f2f2 }
 .taken { opacity:0.4; pointer-events:none; background:#ddd }
-.team img { width:70px }
+.team img { width:70px; height:70px; object-fit:contain }
 .price { color:green; font-size:0.9em }
 .recap-item { display:flex; align-items:center; justify-content:center; gap:10px; margin:5px }
-.recap-item img { width:30px }
+.recap-item img { width:30px; height:30px; object-fit:contain }
 .section { max-width:800px; margin:40px auto; padding:20px; background:#fff; border-radius:15px; box-shadow:0 4px 10px rgba(0,0,0,0.05) }
 .social-bar { background:#000; padding:10px; display:flex; justify-content:center; gap:20px }
 .social-bar img { width:32px }
@@ -23,15 +23,9 @@ h1 { color:#222 }
 <body>
 
 <div class="social-bar">
-  <a href="https://www.youtube.com/@SioTime" target="_blank">
-    <img src="https://upload.wikimedia.org/wikipedia/commons/0/09/YouTube_full-color_icon_%282017%29.svg">
-  </a>
-  <a href="https://www.instagram.com/siotime.cards/" target="_blank">
-    <img src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png">
-  </a>
-  <a href="https://x.com/Siotimecards" target="_blank">
-    <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/X_logo_2023_original.svg">
-  </a>
+  <a href="https://www.youtube.com/@SioTime" target="_blank"><img src="https://upload.wikimedia.org/wikipedia/commons/0/09/YouTube_full-color_icon_%282017%29.svg"></a>
+  <a href="https://www.instagram.com/siotime.cards/" target="_blank"><img src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png"></a>
+  <a href="https://x.com/Siotimecards" target="_blank"><img src="https://upload.wikimedia.org/wikipedia/commons/5/53/X_logo_2023_original.svg"></a>
 </div>
 
 <h1>🏈 Inscriptions NFL Break – Siotime</h1>
@@ -60,11 +54,9 @@ h1 { color:#222 }
 </div>
 
 <script>
-// Ton endpoint Apps Script
 const ENDPOINT = "https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec";
 const deadline = new Date(2026, 11, 22, 20, 0, 0);
 
-// Logos fiables via Wikipedia
 const teams = [
   { name:"Arizona Cardinals", price:6, logo:"https://upload.wikimedia.org/wikipedia/en/0/01/Arizona_Cardinals_logo.svg" },
   { name:"Atlanta Falcons", price:6, logo:"https://upload.wikimedia.org/wikipedia/en/c/c6/Atlanta_Falcons_logo.svg" },
@@ -107,21 +99,21 @@ const timerDiv = document.getElementById("timer");
 function renderTeams(taken=[]) {
   teamsDiv.innerHTML="";
   teams.forEach(t=>{
-    const d=document.createElement("div");
-    d.className="team"+(taken.includes(t.name)?" taken":"");
-    d.innerHTML=`<img src="${t.logo}"><p>${t.name}</p><p class="price">${t.price}€</p>`;
-    d.onclick=()=>selectTeam(t);
+    const d = document.createElement("div");
+    d.className = "team" + (taken.includes(t.name) ? " taken" : "");
+    d.innerHTML = `<img src="${t.logo}" onerror="this.src='https://via.placeholder.com/70'"><p>${t.name}</p><p class="price">${t.price}€</p>`;
+    d.onclick = ()=>selectTeam(t);
     teamsDiv.appendChild(d);
   });
 }
 
 async function selectTeam(team){
-  const pseudo=prompt("Pseudo :"); if(!pseudo) return;
-  const social=prompt("Réseau social :"); if(!social) return;
+  const pseudo = prompt("Pseudo :"); if(!pseudo) return;
+  const social = prompt("Réseau social :"); if(!social) return;
   if(!confirm(`Confirmer ${team.name} (${team.price}€)`)) return;
 
   const res = await fetch(ENDPOINT, {
-    method:"POST",
+    method: "POST",
     body: JSON.stringify({ pseudo, social, team: team.name })
   });
   const data = await res.json();
@@ -137,7 +129,7 @@ async function loadData(){
     recapDiv.innerHTML="";
     recapData.forEach(e=>{
       const team = teams.find(x=>x.name===e.team);
-      if(team) recapDiv.innerHTML+=`<div class="recap-item"><img src="${team.logo}"><b>${e.pseudo}</b> (${team.name})</div>`;
+      if(team) recapDiv.innerHTML += `<div class="recap-item"><img src="${team.logo}" onerror="this.src='https://via.placeholder.com/30'"><b>${e.pseudo}</b> (${team.name})</div>`;
     });
   } catch(err){
     console.error(err);
@@ -146,9 +138,9 @@ async function loadData(){
 
 function updateTimer(){
   const diff = deadline - new Date();
-  if(diff<=0){timerDiv.innerHTML="⛔ Inscriptions fermées"; return;}
-  const h=Math.floor(diff/36e5), m=Math.floor(diff/6e4%60), s=Math.floor(diff/1e3%60);
-  timerDiv.innerHTML=`⏳ Fin dans ${h}h ${m}m ${s}s`;
+  if(diff<=0){ timerDiv.innerHTML="⛔ Inscriptions fermées"; return; }
+  const h = Math.floor(diff/36e5), m = Math.floor(diff/6e4%60), s = Math.floor(diff/1e3%60);
+  timerDiv.innerHTML = `⏳ Fin dans ${h}h ${m}m ${s}s`;
 }
 
 loadData();
@@ -156,6 +148,5 @@ updateTimer();
 setInterval(loadData,15000);
 setInterval(updateTimer,1000);
 </script>
-
 </body>
 </html>
