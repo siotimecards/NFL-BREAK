@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>NFL Break – Inscriptions | Siotime</title>
+<style>
+body { font-family: Arial, sans-serif; text-align:center; background:#fafafa; margin:0 }
+h1 { color:#222 }
+.timer { font-size:20px; color:red; font-weight:bold; margin:10px }
+.teams { display:flex; flex-wrap:wrap; justify-content:center; gap:15px; margin:20px }
+.team { width:140px; padding:10px; border:1px solid #ccc; border-radius:12px; background:white; cursor:pointer }
+.team:hover { background:#f2f2f2 }
+.taken { opacity:0.4; pointer-events:none; background:#ddd }
+.team img { width:70px; height:70px; object-fit:contain }
+.price { color:green; font-size:0.9em }
+.recap-item { display:flex; align-items:center; justify-content:center; gap:10px; margin:5px }
+.recap-item img { width:30px; height:30px; object-fit:contain }
+.section { max-width:800px; margin:40px auto; padding:20px; background:#fff; border-radius:15px; box-shadow:0 4px 10px rgba(0,0,0,0.05) }
+.social-bar { background:#000; padding:10px; display:flex; justify-content:center; gap:20px }
+.social-bar img { width:32px }
+</style>
+</head>
+<body>
+
+<div class="social-bar">
+  <a href="https://www.youtube.com/@SioTime" target="_blank"><img src="https://upload.wikimedia.org/wikipedia/commons/0/09/YouTube_full-color_icon_%282017%29.svg"></a>
+  <a href="https://www.instagram.com/siotime.cards/" target="_blank"><img src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png"></a>
+  <a href="https://x.com/Siotimecards" target="_blank"><img src="https://upload.wikimedia.org/wikipedia/commons/5/53/X_logo_2023_original.svg"></a>
+</div>
+
+<h1>🏈 Inscriptions NFL Break – Siotime</h1>
+<div class="timer" id="timer"></div>
+
+<div class="break-section">
+ <h2>📦 Le Break en image</h2>
+ <img src="BreakNFL.png" alt="Break NFL Siotime" style="max-width:300px; border-radius:12px; box-shadow:0 4px 10px rgba(0,0,0,0.1); margin: 0 auto; display:block;">
+</div>
+
+<div class="teams" id="teams"></div>
+
+<h2>✅ Récap des inscrits</h2>
+<div id="recap"></div>
+
+<div class="section">
+<h2>📦 Règlement du Break</h2>
+<ol style="text-align:left">
+<li>Un spot = une équipe NFL</li>
+<li>Tirage et ouverture en live YouTube</li>
+<li>Toutes les cartes NFL sont envoyées</li>
+<li>Cartes multi-équipes tirées au sort en live</li>
+<li>Envoi protégé et suivi</li>
+<li>Aucun remboursement après démarrage</li>
+</ol>
+</div>
+
+<script>
+const ENDPOINT = "https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec";
+const deadline = new Date(2026, 11, 22, 20, 0, 0);
+
+const teams = [
+  { name:"Arizona Cardinals", price:6, logo:"https://upload.wikimedia.org/wikipedia/en/0/01/Arizona_Cardinals_logo.svg" },
+  { name:"Atlanta Falcons", price:6, logo:"https://upload.wikimedia.org/wikipedia/en/c/c6/Atlanta_Falcons_logo.svg" },
+  { name:"Baltimore Ravens", price:10, logo:"https://upload.wikimedia.org/wikipedia/en/1/16/Baltimore_Ravens_logo.svg" },
+  { name:"Buffalo Bills", price:10, logo:"https://upload.wikimedia.org/wikipedia/en/7/77/Buffalo_Bills_logo.svg" },
+  { name:"Carolina Panthers", price:5, logo:"https://upload.wikimedia.org/wikipedia/en/3/3b/Carolina_Panthers_logo.svg" },
+  { name:"Chicago Bears", price:7, logo:"https://upload.wikimedia.org/wikipedia/commons/5/5c/Chicago_Bears_logo.svg" },
+  { name:"Cincinnati Bengals", price:9, logo:"https://upload.wikimedia.org/wikipedia/commons/8/81/Cincinnati_Bengals_logo.svg" },
+  { name:"Cleveland Browns", price:6, logo:"https://upload.wikimedia.org/wikipedia/commons/d/d1/Cleveland_Browns_logo.svg" },
+  { name:"Dallas Cowboys", price:12, logo:"https://upload.wikimedia.org/wikipedia/commons/1/15/Dallas_Cowboys.svg" },
+  { name:"Denver Broncos", price:6, logo:"https://upload.wikimedia.org/wikipedia/commons/4/44/Denver_Broncos_logo.svg" },
+  { name:"Detroit Lions", price:9, logo:"https://upload.wikimedia.org/wikipedia/commons/7/71/Detroit_Lions_logo.svg" },
+  { name:"Green Bay Packers", price:10, logo:"https://upload.wikimedia.org/wikipedia/commons/5/50/Green_Bay_Packers_logo.svg" },
+  { name:"Houston Texans", price:8, logo:"https://upload.wikimedia.org/wikipedia/commons/2/28/Houston_Texans_logo.svg" },
+  { name:"Indianapolis Colts", price:6, logo:"https://upload.wikimedia.org/wikipedia/commons/1/12/Indianapolis_Colts_logo.svg" },
+  { name:"Jacksonville Jaguars", price:6, logo:"https://upload.wikimedia.org/wikipedia/commons/3/37/Jacksonville_Jaguars_logo.svg" },
+  { name:"Kansas City Chiefs", price:12, logo:"https://upload.wikimedia.org/wikipedia/commons/e/e1/Kansas_City_Chiefs_logo.svg" },
+  { name:"Las Vegas Raiders", price:7, logo:"https://upload.wikimedia.org/wikipedia/commons/9/9b/Las_Vegas_Raiders_logo.svg" },
+  { name:"Los Angeles Chargers", price:8, logo:"https://upload.wikimedia.org/wikipedia/commons/7/7e/Los_Angeles_Chargers_logo.svg" },
+  { name:"Los Angeles Rams", price:7, logo:"https://upload.wikimedia.org/wikipedia/commons/1/1e/Los_Angeles_Rams_logo.svg" },
+  { name:"Miami Dolphins", price:9, logo:"https://upload.wikimedia.org/wikipedia/commons/3/37/Miami_Dolphins_logo.svg" },
+  { name:"Minnesota Vikings", price:8, logo:"https://upload.wikimedia.org/wikipedia/commons/9/96/Minnesota_Vikings_logo.svg" },
+  { name:"New England Patriots", price:7, logo:"https://upload.wikimedia.org/wikipedia/en/b/b9/New_England_Patriots_logo.svg" },
+  { name:"New Orleans Saints", price:6, logo:"https://upload.wikimedia.org/wikipedia/commons/8/82/New_Orleans_Saints_logo.svg" },
+  { name:"New York Giants", price:7, logo:"https://upload.wikimedia.org/wikipedia/commons/6/60/New_York_Giants_logo.svg" },
+  { name:"New York Jets", price:7, logo:"https://upload.wikimedia.org/wikipedia/commons/6/6d/New_York_Jets_logo.svg" },
+  { name:"Philadelphia Eagles", price:11, logo:"https://upload.wikimedia.org/wikipedia/commons/8/8e/Philadelphia_Eagles_logo.svg" },
+  { name:"Pittsburgh Steelers", price:9, logo:"https://upload.wikimedia.org/wikipedia/commons/d/d7/Pittsburgh_Steelers_logo.svg" },
+  { name:"San Francisco 49ers", price:12, logo:"https://upload.wikimedia.org/wikipedia/commons/6/6b/San_Francisco_49ers_logo.svg" },
+  { name:"Seattle Seahawks", price:7, logo:"https://upload.wikimedia.org/wikipedia/commons/7/7c/Seattle_Seahawks_logo.svg" },
+  { name:"Tampa Bay Buccaneers", price:7, logo:"https://upload.wikimedia.org/wikipedia/commons/c/c0/Tampa_Bay_Buccaneers_logo.svg" },
+  { name:"Tennessee Titans", price:6, logo:"https://upload.wikimedia.org/wikipedia/commons/2/28/Tennessee_Titans_logo.svg" },
+  { name:"Washington Commanders", price:7, logo:"https://upload.wikimedia.org/wikipedia/commons/6/6e/Washington_Commanders_logo.svg" },
+];
+
+const teamsDiv = document.getElementById("teams");
+const recapDiv = document.getElementById("recap");
+const timerDiv = document.getElementById("timer");
+
+function renderTeams(taken=[]) {
+  teamsDiv.innerHTML="";
+  teams.forEach(t=>{
+    const d = document.createElement("div");
+    d.className = "team" + (taken.includes(t.name) ? " taken" : "");
+    d.innerHTML = `<img src="${t.logo}" onerror="this.src='https://via.placeholder.com/70'"><p>${t.name}</p><p class="price">${t.price}€</p>`;
+    d.onclick = ()=>selectTeam(t);
+    teamsDiv.appendChild(d);
+  });
+}
+
+async function selectTeam(team){
+  const pseudo = prompt("Pseudo :"); if(!pseudo) return;
+  const social = prompt("Réseau social :"); if(!social) return;
+  if(!confirm(`Confirmer ${team.name} (${team.price}€)`)) return;
+
+  const res = await fetch(ENDPOINT, {
+    method: "POST",
+    body: JSON.stringify({ pseudo, social, team: team.name })
+  });
+  const data = await res.json();
+  alert(data.status==="ok"?"Inscription validée":"Erreur : "+(data.message||""));
+  loadData();
+}
+
+async function loadData(){
+  try {
+    const takenTeams = await (await fetch(ENDPOINT+"?mode=taken")).json();
+    renderTeams(takenTeams);
+    const recapData = await (await fetch(ENDPOINT+"?mode=recap")).json();
+    recapDiv.innerHTML="";
+    recapData.forEach(e=>{
+      const team = teams.find(x=>x.name===e.team);
+      if(team) recapDiv.innerHTML += `<div class="recap-item"><img src="${team.logo}" onerror="this.src='https://via.placeholder.com/30'"><b>${e.pseudo}</b> (${team.name})</div>`;
+    });
+  } catch(err){
+    console.error(err);
+  }
+}
+
+function updateTimer(){
+  const diff = deadline - new Date();
+  if(diff<=0){ timerDiv.innerHTML="⛔ Inscriptions fermées"; return; }
+  const h = Math.floor(diff/36e5), m = Math.floor(diff/6e4%60), s = Math.floor(diff/1e3%60);
+  timerDiv.innerHTML = `⏳ Fin dans ${h}h ${m}m ${s}s`;
+}
+
+loadData();
+updateTimer();
+setInterval(loadData,15000);
+setInterval(updateTimer,1000);
+</script>
+</body>
+</html>
