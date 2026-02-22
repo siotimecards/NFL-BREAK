@@ -2,13 +2,20 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<title>NFL Break – Inscriptions | Siotime</title>
+<title>NFL Break – Siotime</title>
 
 <style>
+:root{
+  --bg:#0e0e0e;
+  --card:#ffffff;
+  --accent:#e10600;
+  --text:#111;
+}
+
 body{
   margin:0;
-  font-family:Arial, sans-serif;
-  background:#f4f4f4;
+  font-family:Arial, Helvetica, sans-serif;
+  background:#f1f1f1;
   text-align:center;
 }
 
@@ -18,102 +25,119 @@ body{
   color:#fff;
   display:flex;
   justify-content:center;
-  align-items:center;
-  gap:25px;
+  gap:30px;
   padding:12px;
   flex-wrap:wrap;
+  font-size:14px;
 }
-
 .social-item{
   display:flex;
   align-items:center;
-  gap:6px;
-  font-size:14px;
+  gap:8px;
   white-space:nowrap;
 }
+.social-item img{ width:18px }
 
-.social-item img{
-  width:18px;
+/* ===== HEADER ===== */
+header{
+  background:var(--bg);
+  color:#fff;
+  padding:25px 10px;
 }
+header h1{ margin:0; font-size:32px }
+.timer{ margin-top:8px; color:#ff4d4d; font-weight:bold }
 
-@media(max-width:600px){
-  .social-item{ font-size:12px }
-  .social-item img{ width:14px }
-}
-
-/* ===== TITRES ===== */
-h1{ margin:20px 0 10px }
-.timer{ color:red; font-weight:bold }
-
-/* ===== COMPTEUR ===== */
+/* ===== COUNTER ===== */
 #spotsLeft{
-  margin:10px;
+  margin:15px;
+  font-size:20px;
   font-weight:bold;
-  font-size:18px;
 }
 
-/* ===== GRID TEAMS ===== */
+/* ===== GRID ===== */
 .teams{
-  display:flex;
-  flex-wrap:wrap;
-  justify-content:center;
-  gap:15px;
-  margin:20px;
+  max-width:1100px;
+  margin:20px auto;
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(150px,1fr));
+  gap:20px;
+  padding:0 15px;
 }
 
 .team{
-  width:140px;
-  padding:10px;
-  background:#fff;
-  border-radius:12px;
-  box-shadow:0 4px 10px rgba(0,0,0,0.1);
+  background:var(--card);
+  border-radius:14px;
+  padding:15px 10px;
+  box-shadow:0 6px 18px rgba(0,0,0,.15);
   cursor:pointer;
-  transition:0.2s;
+  transition:.2s;
   position:relative;
 }
+.team:hover{ transform:translateY(-5px) }
 
-.team:hover{ transform:scale(1.05) }
-
-.team img{ width:70px }
-
-.price{ color:green; font-size:0.9em }
-
-.taken{
-  opacity:0.4;
-  pointer-events:none;
-  background:#ddd;
+.team img{
+  width:70px;
+  margin-bottom:8px;
 }
 
-/* FORMULAIRE */
+.team-name{
+  font-weight:bold;
+  font-size:14px;
+}
+
+.price{
+  color:green;
+  font-size:13px;
+  margin-top:4px;
+}
+
+.taken{
+  opacity:.35;
+  pointer-events:none;
+}
+
+/* ===== FORM ===== */
 .reserve-form{
   position:absolute;
   inset:0;
-  background:rgba(255,255,255,0.95);
+  background:rgba(255,255,255,.97);
+  border-radius:14px;
   display:flex;
   flex-direction:column;
   justify-content:center;
-  align-items:center;
-  gap:6px;
-  border-radius:12px;
-  padding:10px;
+  gap:8px;
+  padding:12px;
+}
+.reserve-form input{
+  padding:6px;
+}
+.reserve-form button{
+  padding:8px;
+  background:var(--accent);
+  border:none;
+  color:#fff;
+  font-weight:bold;
+  border-radius:6px;
+  cursor:pointer;
 }
 
-/* ANIMATION */
-.reserved{ animation:pop 0.4s ease }
+/* ===== ANIMATIONS ===== */
+.reserved{ animation:pop .4s ease }
 @keyframes pop{
-  0%{ transform:scale(1) }
-  50%{ transform:scale(1.2) }
-  100%{ transform:scale(1) }
+  0%{transform:scale(1)}
+  50%{transform:scale(1.15)}
+  100%{transform:scale(1)}
 }
 
 .last-spot{
-  animation:flash 0.6s infinite alternate;
+  animation:flash .6s infinite alternate;
 }
 @keyframes flash{
   from{ box-shadow:0 0 10px red }
   to{ box-shadow:0 0 30px red }
 }
 
+/* ===== FLASH ===== */
 .flash{
   position:fixed;
   top:20px;
@@ -125,6 +149,7 @@ h1{ margin:20px 0 10px }
   border-radius:30px;
   font-weight:bold;
   animation:fade 2s forwards;
+  z-index:999;
 }
 @keyframes fade{
   0%{opacity:0}
@@ -133,13 +158,14 @@ h1{ margin:20px 0 10px }
   100%{opacity:0}
 }
 
-/* RECAP */
+/* ===== RECAP ===== */
 #recap{
-  max-width:600px;
+  max-width:700px;
   margin:30px auto;
   background:#fff;
   padding:15px;
-  border-radius:12px;
+  border-radius:14px;
+  box-shadow:0 4px 10px rgba(0,0,0,.1);
 }
 </style>
 </head>
@@ -147,28 +173,18 @@ h1{ margin:20px 0 10px }
 <body>
 
 <div id="social-bar">
-  <div class="social-item">
-    <img src="https://cdn-icons-png.flaticon.com/512/1384/1384060.png">
-    <span>YouTube : Siotime</span>
-  </div>
-  <div class="social-item">
-    <img src="https://cdn-icons-png.flaticon.com/512/2111/2111646.png">
-    <span>Twitch : SiotimeLive</span>
-  </div>
-  <div class="social-item">
-    <img src="https://cdn-icons-png.flaticon.com/512/733/733579.png">
-    <span>X : @SiotimeCards</span>
-  </div>
-  <div class="social-item">
-    <img src="https://cdn-icons-png.flaticon.com/512/1384/1384063.png">
-    <span>Instagram : siotime.cards</span>
-  </div>
+  <div class="social-item"><img src="https://cdn-icons-png.flaticon.com/512/1384/1384060.png">YouTube : Siotime</div>
+  <div class="social-item"><img src="https://cdn-icons-png.flaticon.com/512/2111/2111646.png">Twitch : SiotimeLive</div>
+  <div class="social-item"><img src="https://cdn-icons-png.flaticon.com/512/733/733579.png">X : @SiotimeCards</div>
+  <div class="social-item"><img src="https://cdn-icons-png.flaticon.com/512/1384/1384063.png">Instagram : siotime.cards</div>
 </div>
 
-<h1>🏈 NFL Break – Siotime</h1>
-<div class="timer" id="timer"></div>
-<div id="spotsLeft"></div>
+<header>
+  <h1>🏈 NFL BREAK – SIOTIME</h1>
+  <div class="timer" id="timer"></div>
+</header>
 
+<div id="spotsLeft"></div>
 <div class="teams" id="teams"></div>
 
 <h2>✅ Récap inscrits</h2>
@@ -179,6 +195,9 @@ h1{ margin:20px 0 10px }
 </audio>
 
 <script>
+const ENDPOINT = "TON_URL_APPS_SCRIPT_ICI";
+const deadline = new Date(2026,1,22,18,0,0);
+
 const teams = [
 { name:"Arizona Cardinals", price:10, logo:"https://a.espncdn.com/i/teamlogos/nfl/500/ari.png" },
 { name:"Atlanta Falcons", price:10, logo:"https://a.espncdn.com/i/teamlogos/nfl/500/atl.png" },
@@ -219,6 +238,14 @@ const recapDiv=document.getElementById("recap");
 const timerDiv=document.getElementById("timer");
 const sound=document.getElementById("sound");
 
+function flash(msg){
+  const d=document.createElement("div");
+  d.className="flash";
+  d.innerText=msg;
+  document.body.appendChild(d);
+  setTimeout(()=>d.remove(),2000);
+}
+
 function render(taken=[]){
   teamsDiv.innerHTML="";
   const left=teams.length-taken.length;
@@ -232,9 +259,9 @@ function render(taken=[]){
     if(left===1 && !isTaken) d.classList.add("last-spot");
 
     d.innerHTML=`
-      <img src="https://a.espncdn.com/i/teamlogos/nfl/500/${t.logo}">
-      <p>${t.name}</p>
-      <p class="price">10€</p>
+      <img src="${t.logo}">
+      <div class="team-name">${t.name}</div>
+      <div class="price">${t.price}€</div>
     `;
 
     if(!isTaken) d.onclick=()=>showForm(t.name,d);
@@ -248,52 +275,43 @@ function showForm(team,el){
   const form=document.createElement("div");
   form.className="reserve-form";
   form.innerHTML=`
-    <input type="text" placeholder="Pseudo">
-    <input type="text" placeholder="Réseau social">
+    <input placeholder="Pseudo">
+    <input placeholder="Réseau social">
     <button>Réserver</button>
   `;
   el.appendChild(form);
 
   form.querySelector("button").onclick=async()=>{
-    const inputs=form.querySelectorAll("input");
-    const pseudo=inputs[0].value.trim();
-    const social=inputs[1].value.trim();
-    if(!pseudo||!social) return alert("Remplis les champs");
+    const i=form.querySelectorAll("input");
+    if(!i[0].value||!i[1].value) return alert("Champs manquants");
 
-    try{
-      const r=await fetch(ENDPOINT,{
-        method:"POST",
-        body:JSON.stringify({pseudo,social,team})
-      });
-      const j=await r.json();
-      if(j.status==="ok"){
-        el.classList.add("reserved","taken");
-        sound.play();
-        load();
-      }else alert("Déjà prise");
-    }catch(e){ alert("Erreur réseau") }
+    const r=await fetch(ENDPOINT,{
+      method:"POST",
+      body:JSON.stringify({pseudo:i[0].value,social:i[1].value,team})
+    });
+    const j=await r.json();
+    if(j.status==="ok"){
+      sound.play();
+      flash("✅ Équipe réservée !");
+      load();
+    } else alert("Déjà prise");
   };
 }
 
 async function load(){
-  try{
-    const taken=await (await fetch(ENDPOINT+"?mode=taken")).json();
-    render(taken);
-
-    const recap=await (await fetch(ENDPOINT+"?mode=recap")).json();
-    recapDiv.innerHTML="";
-    recap.forEach(r=>{
-      recapDiv.innerHTML+=`<div><b>${r.pseudo}</b> – ${r.team}</div>`;
-    });
-  }catch(e){ console.log(e) }
+  const taken=await (await fetch(ENDPOINT+"?mode=taken")).json();
+  render(taken);
+  const recap=await (await fetch(ENDPOINT+"?mode=recap")).json();
+  recapDiv.innerHTML="";
+  recap.forEach(r=>{
+    recapDiv.innerHTML+=`<div><b>${r.pseudo}</b> – ${r.team}</div>`;
+  });
 }
 
 function updateTimer(){
   const d=deadline-new Date();
-  if(d<=0){ timerDiv.innerText="⛔ Inscriptions fermées"; return }
-  const h=Math.floor(d/36e5),
-        m=Math.floor(d/6e4%60),
-        s=Math.floor(d/1e3%60);
+  if(d<=0){ timerDiv.innerText="⛔ Inscriptions fermées"; return; }
+  const h=Math.floor(d/36e5),m=Math.floor(d/6e4%60),s=Math.floor(d/1e3%60);
   timerDiv.innerText=`⏳ Fin dans ${h}h ${m}m ${s}s`;
 }
 
