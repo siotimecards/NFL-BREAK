@@ -1,3 +1,203 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>NFL Break – Siotime</title>
+
+<style>
+:root{
+  --bg:#0e0e0e;
+  --card:#ffffff;
+  --accent:#e10600;
+  --text:#111;
+}
+
+body{
+  margin:0;
+  font-family:Arial, Helvetica, sans-serif;
+  background:#f1f1f1;
+  text-align:center;
+}
+
+/* ===== BANDEAU SOCIAL ===== */
+#social-bar{
+  background:#000;
+  color:#fff;
+  display:flex;
+  justify-content:center;
+  gap:30px;
+  padding:12px;
+  flex-wrap:wrap;
+  font-size:14px;
+}
+.social-item{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  white-space:nowrap;
+}
+.social-item img{ width:18px }
+
+/* ===== HEADER ===== */
+header{
+  background:var(--bg);
+  color:#fff;
+  padding:25px 10px;
+}
+header h1{ margin:0; font-size:32px }
+.timer{ margin-top:8px; color:#ff4d4d; font-weight:bold }
+
+/* ===== COUNTER ===== */
+#spotsLeft{
+  margin:15px;
+  font-size:20px;
+  font-weight:bold;
+}
+
+/* ===== GRID ===== */
+.teams{
+  max-width:1100px;
+  margin:20px auto;
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(150px,1fr));
+  gap:20px;
+  padding:0 15px;
+}
+
+.team{
+  background:var(--card);
+  border-radius:14px;
+  padding:15px 10px;
+  box-shadow:0 6px 18px rgba(0,0,0,.15);
+  cursor:pointer;
+  transition:.2s;
+  position:relative;
+}
+.team:hover{ transform:translateY(-5px) }
+
+.team img{
+  width:70px;
+  margin-bottom:8px;
+}
+
+.team-name{
+  font-weight:bold;
+  font-size:14px;
+}
+
+.price{
+  color:green;
+  font-size:13px;
+  margin-top:4px;
+}
+
+.taken{
+  opacity:.35;
+  pointer-events:none;
+}
+
+/* ===== FORM ===== */
+.reserve-form{
+  position:absolute;
+  inset:0;
+  background:rgba(255,255,255,.97);
+  border-radius:14px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  gap:8px;
+  padding:12px;
+}
+.reserve-form input{
+  padding:6px;
+}
+.reserve-form button{
+  padding:8px;
+  background:var(--accent);
+  border:none;
+  color:#fff;
+  font-weight:bold;
+  border-radius:6px;
+  cursor:pointer;
+}
+
+/* ===== ANIMATIONS ===== */
+.reserved{ animation:pop .4s ease }
+@keyframes pop{
+  0%{transform:scale(1)}
+  50%{transform:scale(1.15)}
+  100%{transform:scale(1)}
+}
+
+.last-spot{
+  animation:flash .6s infinite alternate;
+}
+@keyframes flash{
+  from{ box-shadow:0 0 10px red }
+  to{ box-shadow:0 0 30px red }
+}
+
+/* ===== FLASH ===== */
+.flash{
+  position:fixed;
+  top:20px;
+  left:50%;
+  transform:translateX(-50%);
+  background:#28a745;
+  color:#fff;
+  padding:12px 25px;
+  border-radius:30px;
+  font-weight:bold;
+  animation:fade 2s forwards;
+  z-index:999;
+}
+@keyframes fade{
+  0%{opacity:0}
+  20%{opacity:1}
+  80%{opacity:1}
+  100%{opacity:0}
+}
+
+/* ===== RECAP ===== */
+#recap{
+  max-width:700px;
+  margin:30px auto;
+  background:#fff;
+  padding:15px;
+  border-radius:14px;
+  box-shadow:0 4px 10px rgba(0,0,0,.1);
+}
+</style>
+</head>
+
+<body>
+
+<div id="social-bar">
+  <div class="social-item"><img src="https://cdn-icons-png.flaticon.com/512/1384/1384060.png">YouTube : Siotime</div>
+  <div class="social-item"><img src="https://cdn-icons-png.flaticon.com/512/2111/2111646.png">Twitch : SiotimeLive</div>
+  <div class="social-item"><img src="https://cdn-icons-png.flaticon.com/512/733/733579.png">X : @SiotimeCards</div>
+  <div class="social-item"><img src="https://cdn-icons-png.flaticon.com/512/1384/1384063.png">Instagram : siotime.cards</div>
+</div>
+
+<header>
+  <h1>🏈 NFL BREAK – SIOTIME</h1>
+  <div class="timer" id="timer"></div>
+</header>
+
+<div id="spotsLeft"></div>
+<div class="teams" id="teams"></div>
+
+<h2>✅ Récap inscrits</h2>
+<div id="recap"></div>
+
+<audio id="sound">
+  <source src="https://assets.mixkit.co/sfx/preview/mixkit-achievement-bell-600.mp3">
+</audio>
+
+<script>
+const ENDPOINT = "TON_URL_APPS_SCRIPT_ICI";
+const deadline = new Date(2026,1,22,18,0,0);
+
 const teams = [
 { name:"Arizona Cardinals", price:10, logo:"https://upload.wikimedia.org/wikipedia/en/7/7c/Arizona_Cardinals_logo.svg" },
 { name:"Atlanta Falcons", price:10, logo:"https://upload.wikimedia.org/wikipedia/en/c/c5/Atlanta_Falcons_logo.svg" },
@@ -32,3 +232,94 @@ const teams = [
 { name:"Tennessee Titans", price:10, logo:"https://upload.wikimedia.org/wikipedia/en/c/c1/Tennessee_Titans_logo.svg" },
 { name:"Washington Commanders", price:9, logo:"https://upload.wikimedia.org/wikipedia/en/0/0c/Washington_Commanders_logo.svg" }
 ];
+
+const teamsDiv=document.getElementById("teams");
+const recapDiv=document.getElementById("recap");
+const timerDiv=document.getElementById("timer");
+const sound=document.getElementById("sound");
+
+function flash(msg){
+  const d=document.createElement("div");
+  d.className="flash";
+  d.innerText=msg;
+  document.body.appendChild(d);
+  setTimeout(()=>d.remove(),2000);
+}
+
+function render(taken=[]){
+  teamsDiv.innerHTML="";
+  const left=teams.length-taken.length;
+  document.getElementById("spotsLeft").innerText=
+    `🎟️ ${left} spots restants sur ${teams.length}`;
+
+  teams.forEach(t=>{
+    const d=document.createElement("div");
+    const isTaken=taken.includes(t.name);
+    d.className="team"+(isTaken?" taken":"");
+    if(left===1 && !isTaken) d.classList.add("last-spot");
+
+    d.innerHTML=`
+      <img src="${t.logo}">
+      <div class="team-name">${t.name}</div>
+      <div class="price">${t.price}€</div>
+    `;
+
+    if(!isTaken) d.onclick=()=>showForm(t.name,d);
+    teamsDiv.appendChild(d);
+  });
+}
+
+function showForm(team,el){
+  if(el.querySelector(".reserve-form")) return;
+
+  const form=document.createElement("div");
+  form.className="reserve-form";
+  form.innerHTML=`
+    <input placeholder="Pseudo">
+    <input placeholder="Réseau social">
+    <button>Réserver</button>
+  `;
+  el.appendChild(form);
+
+  form.querySelector("button").onclick=async()=>{
+    const i=form.querySelectorAll("input");
+    if(!i[0].value||!i[1].value) return alert("Champs manquants");
+
+    const r=await fetch(ENDPOINT,{
+      method:"POST",
+      body:JSON.stringify({pseudo:i[0].value,social:i[1].value,team})
+    });
+    const j=await r.json();
+    if(j.status==="ok"){
+      sound.play();
+      flash("✅ Équipe réservée !");
+      load();
+    } else alert("Déjà prise");
+  };
+}
+
+async function load(){
+  const taken=await (await fetch(ENDPOINT+"?mode=taken")).json();
+  render(taken);
+  const recap=await (await fetch(ENDPOINT+"?mode=recap")).json();
+  recapDiv.innerHTML="";
+  recap.forEach(r=>{
+    recapDiv.innerHTML+=`<div><b>${r.pseudo}</b> – ${r.team}</div>`;
+  });
+}
+
+function updateTimer(){
+  const d=deadline-new Date();
+  if(d<=0){ timerDiv.innerText="⛔ Inscriptions fermées"; return; }
+  const h=Math.floor(d/36e5),m=Math.floor(d/6e4%60),s=Math.floor(d/1e3%60);
+  timerDiv.innerText=`⏳ Fin dans ${h}h ${m}m ${s}s`;
+}
+
+load();
+updateTimer();
+setInterval(load,15000);
+setInterval(updateTimer,1000);
+</script>
+
+</body>
+</html>
