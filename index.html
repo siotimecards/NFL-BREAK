@@ -1,25 +1,267 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>NFL Break – Siotime</title>
+
+<style>
+body{
+  margin:0;
+  font-family:Arial, sans-serif;
+  background:#f4f4f4;
+  text-align:center;
+}
+
+/* ===== BANDEAU SOCIAL ===== */
+#social-bar{
+  background:#000;
+  color:#fff;
+  display:flex;
+  justify-content:center;
+  gap:25px;
+  padding:12px;
+  flex-wrap:wrap;
+}
+.social-item{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  font-size:14px;
+}
+.social-item img{ width:20px }
+
+/* ===== TITRES ===== */
+h1{ margin:20px 0 10px }
+.timer{ color:red; font-weight:bold }
+
+/* ===== COMPTEUR ===== */
+#spotsLeft{
+  font-size:18px;
+  font-weight:bold;
+  margin:10px;
+}
+.counter-green{ color:green }
+.counter-orange{ color:orange }
+.counter-red{ color:red }
+
+/* ===== TEAMS ===== */
+.teams{
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+  gap:15px;
+  margin:20px;
+}
+
+.team{
+  width:140px;
+  padding:10px;
+  background:#fff;
+  border-radius:12px;
+  box-shadow:0 4px 10px rgba(0,0,0,0.1);
+  cursor:pointer;
+  transition:0.2s;
+}
+.team:hover{ transform:scale(1.05) }
+
+.team img{
+  width:70px;
+  height:70px;
+  object-fit:contain;
+  display:block;
+  margin:0 auto 5px;
+}
+
+.price{ color:green; font-size:0.9em }
+
+.taken{
+  opacity:0.4;
+  pointer-events:none;
+  background:#ddd;
+}
+
+/* ===== DERNIER SPOT ===== */
+.last-spot{
+  animation:flash 0.6s infinite alternate;
+}
+@keyframes flash{
+  from{ box-shadow:0 0 10px red }
+  to{ box-shadow:0 0 25px red }
+}
+
+/* ===== FLASH ===== */
+.flash{
+  position:fixed;
+  top:20px;
+  left:50%;
+  transform:translateX(-50%);
+  background:#28a745;
+  color:#fff;
+  padding:12px 25px;
+  border-radius:30px;
+  font-weight:bold;
+  animation:fade 2s forwards;
+  z-index:999;
+}
+@keyframes fade{
+  0%{ opacity:0 }
+  20%{ opacity:1 }
+  80%{ opacity:1 }
+  100%{ opacity:0 }
+}
+
+/* ===== RECAP ===== */
+#recap{
+  max-width:600px;
+  margin:30px auto;
+  background:#fff;
+  padding:15px;
+  border-radius:12px;
+}
+.recap-item{ margin:6px }
+</style>
+</head>
+
+<body>
+
+<!-- BANDEAU -->
+<div id="social-bar">
+  <div class="social-item">📺 YouTube : Siotime</div>
+  <div class="social-item">📸 Instagram : siotime.cards</div>
+  <div class="social-item">❌ X : @SiotimeCards</div>
+</div>
+
+<h1>🏈 NFL Break – Siotime</h1>
+<div class="timer" id="timer"></div>
+<div id="spotsLeft"></div>
+
+<div class="teams" id="teams"></div>
+
+<h2>✅ Récap inscrits</h2>
+<div id="recap"></div>
+
+<audio id="sound">
+  <source src="https://assets.mixkit.co/sfx/preview/mixkit-achievement-bell-600.mp3">
+</audio>
+
 <script>
+const ENDPOINT = "https://script.google.com/macros/s/AKfycbxCLG5GaC4nluXa29V9zWYWQraVeFdR7mw-oZeFdPsZXUvRgRlRBVOulKFUA3sZns1e/exec";
+const deadline = new Date(2026,1,22,18,0,0);
+
 const teams = [
-  {
-    name: "Chicago Bears",
-    logo: "https://upload.wikimedia.org/wikipedia/en/thumb/5/5c/Chicago_Bears_logo.svg/300px-Chicago_Bears_logo.svg.png"
-  },
-  {
-    name: "Dallas Cowboys",
-    logo: "https://upload.wikimedia.org/wikipedia/en/thumb/1/15/Dallas_Cowboys_logo.svg/300px-Dallas_Cowboys_logo.svg.png"
-  }
+{n:"Arizona Cardinals",c:"ari"},
+{n:"Atlanta Falcons",c:"atl"},
+{n:"Baltimore Ravens",c:"bal"},
+{n:"Buffalo Bills",c:"buf"},
+{n:"Carolina Panthers",c:"car"},
+{n:"Chicago Bears",c:"chi"},
+{n:"Cincinnati Bengals",c:"cin"},
+{n:"Cleveland Browns",c:"cle"},
+{n:"Dallas Cowboys",c:"dal"},
+{n:"Denver Broncos",c:"den"},
+{n:"Detroit Lions",c:"det"},
+{n:"Green Bay Packers",c:"gb"},
+{n:"Houston Texans",c:"hou"},
+{n:"Indianapolis Colts",c:"ind"},
+{n:"Jacksonville Jaguars",c:"jax"},
+{n:"Kansas City Chiefs",c:"kc"},
+{n:"Las Vegas Raiders",c:"lv"},
+{n:"Los Angeles Chargers",c:"lac"},
+{n:"Los Angeles Rams",c:"lar"},
+{n:"Miami Dolphins",c:"mia"},
+{n:"Minnesota Vikings",c:"min"},
+{n:"New England Patriots",c:"ne"},
+{n:"New Orleans Saints",c:"no"},
+{n:"New York Giants",c:"nyg"},
+{n:"New York Jets",c:"nyj"},
+{n:"Philadelphia Eagles",c:"phi"},
+{n:"Pittsburgh Steelers",c:"pit"},
+{n:"San Francisco 49ers",c:"sf"},
+{n:"Seattle Seahawks",c:"sea"},
+{n:"Tampa Bay Buccaneers",c:"tb"},
+{n:"Tennessee Titans",c:"ten"},
+{n:"Washington Commanders",c:"wsh"}
 ];
 
 const teamsDiv = document.getElementById("teams");
-teamsDiv.innerHTML = "";
+const recapDiv = document.getElementById("recap");
+const timerDiv = document.getElementById("timer");
+const sound = document.getElementById("sound");
 
-teams.forEach(t => {
-  const d = document.createElement("div");
-  d.className = "team";
-  d.innerHTML = `
-    <img src="${t.logo}" style="width:70px;height:70px;object-fit:contain;">
-    <p>${t.name}</p>
-  `;
-  teamsDiv.appendChild(d);
-});
+function flash(msg){
+  const d=document.createElement("div");
+  d.className="flash";
+  d.innerText=msg;
+  document.body.appendChild(d);
+  setTimeout(()=>d.remove(),2000);
+}
+
+function render(taken=[]){
+  teamsDiv.innerHTML="";
+  const left = teams.length - taken.length;
+
+  const counter=document.getElementById("spotsLeft");
+  counter.className = left<=5?"counter-red":left<=10?"counter-orange":"counter-green";
+  counter.innerText=`🎟️ ${left} spots restants sur ${teams.length}`;
+
+  teams.forEach(t=>{
+    const d=document.createElement("div");
+    const isTaken = taken.includes(t.n);
+    d.className="team"+(isTaken?" taken":"");
+    if(left===1 && !isTaken) d.classList.add("last-spot");
+
+    d.innerHTML=`
+      <img src="logos/${t.c}.png" alt="${t.n}">
+      <p>${t.n}</p>
+      <p class="price">10€</p>
+    `;
+
+    if(!isTaken){
+      d.onclick=async ()=>{
+        const pseudo=prompt("Pseudo ?");
+        if(!pseudo) return;
+        const social=prompt("Réseau social ?");
+        if(!social) return;
+
+        const r=await fetch(ENDPOINT,{
+          method:"POST",
+          body:JSON.stringify({pseudo,social,team:t.n})
+        });
+        const j=await r.json();
+        if(j.status==="ok"){
+          sound.play();
+          flash("✅ Équipe réservée !");
+          load();
+        } else alert("Déjà prise !");
+      };
+    }
+    teamsDiv.appendChild(d);
+  });
+}
+
+async function load(){
+  const taken=await (await fetch(ENDPOINT+"?mode=taken")).json();
+  render(taken);
+
+  const recap=await (await fetch(ENDPOINT+"?mode=recap")).json();
+  recapDiv.innerHTML="";
+  recap.forEach(r=>{
+    recapDiv.innerHTML+=`<div class="recap-item"><b>${r.pseudo}</b> – ${r.team}</div>`;
+  });
+}
+
+function updateTimer(){
+  const d=deadline-new Date();
+  if(d<=0){ timerDiv.innerText="⛔ Inscriptions fermées"; return; }
+  const h=Math.floor(d/36e5),m=Math.floor(d/6e4%60),s=Math.floor(d/1e3%60);
+  timerDiv.innerText=`⏳ Fin dans ${h}h ${m}m ${s}s`;
+}
+
+load();
+updateTimer();
+setInterval(load,15000);
+setInterval(updateTimer,1000);
 </script>
+
+</body>
+</html>
