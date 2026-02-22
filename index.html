@@ -5,188 +5,306 @@
 <title>NFL Break – Inscriptions | Siotime</title>
 
 <style>
-body { font-family: Arial, sans-serif; text-align:center; background:#fafafa; margin:0 }
-h1 { color:#222 }
-.timer { font-size:20px; color:red; font-weight:bold; margin:10px }
-.teams { display:flex; flex-wrap:wrap; justify-content:center; gap:15px; margin:20px }
-.team { width:140px; padding:10px; border:1px solid #ccc; border-radius:12px; background:white; cursor:pointer; transition:0.2s }
-.team:hover { background:#f2f2f2; transform:scale(1.05) }
-.taken { opacity:0.4; pointer-events:none; background:#ddd }
-.team img { width:70px }
-.price { color:green; font-size:0.9em }
-
-.counter-green { color:green; }
-.counter-orange { color:orange; }
-.counter-red { color:red; }
-
-.reserved-animation { animation: pop 0.4s ease forwards; }
-@keyframes pop {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.15); }
-  100% { transform: scale(1); }
+body{
+  margin:0;
+  font-family:Arial, sans-serif;
+  background:#f4f4f4;
+  text-align:center;
 }
 
-.flash-success {
-  position: fixed;
-  top: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: #28a745;
-  color: white;
-  padding: 12px 25px;
-  border-radius: 30px;
-  font-weight: bold;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-  z-index: 9999;
-  opacity: 0;
-  animation: fadeInOut 2s ease forwards;
+/* ===== BANDEAU SOCIAL ===== */
+#social-bar{
+  background:#000;
+  color:#fff;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:25px;
+  padding:12px;
+  flex-wrap:wrap;
 }
 
-@keyframes fadeInOut {
-  0% { opacity: 0; top: 0px; }
-  20% { opacity: 1; top: 20px; }
-  80% { opacity: 1; }
-  100% { opacity: 0; }
+.social-item{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  font-size:14px;
+  white-space:nowrap;
 }
 
-.recap-item { display:flex; align-items:center; justify-content:center; gap:10px; margin:5px }
-.recap-item img { width:30px }
+.social-item img{
+  width:18px;
+}
 
-.section { max-width:800px; margin:40px auto; padding:20px; background:#fff; border-radius:15px; box-shadow:0 4px 10px rgba(0,0,0,0.05) }
+@media(max-width:600px){
+  .social-item{ font-size:12px }
+  .social-item img{ width:14px }
+}
 
-.social-bar { background:#000; padding:10px; display:flex; justify-content:center; gap:20px }
-.social-bar img { width:32px }
+/* ===== TITRES ===== */
+h1{ margin:20px 0 10px }
+.timer{ color:red; font-weight:bold }
+
+/* ===== COMPTEUR ===== */
+#spotsLeft{
+  margin:10px;
+  font-weight:bold;
+  font-size:18px;
+}
+
+/* ===== GRID TEAMS ===== */
+.teams{
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+  gap:15px;
+  margin:20px;
+}
+
+.team{
+  width:140px;
+  padding:10px;
+  background:#fff;
+  border-radius:12px;
+  box-shadow:0 4px 10px rgba(0,0,0,0.1);
+  cursor:pointer;
+  transition:0.2s;
+  position:relative;
+}
+
+.team:hover{ transform:scale(1.05) }
+
+.team img{ width:70px }
+
+.price{ color:green; font-size:0.9em }
+
+.taken{
+  opacity:0.4;
+  pointer-events:none;
+  background:#ddd;
+}
+
+/* FORMULAIRE */
+.reserve-form{
+  position:absolute;
+  inset:0;
+  background:rgba(255,255,255,0.95);
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  gap:6px;
+  border-radius:12px;
+  padding:10px;
+}
+
+/* ANIMATION */
+.reserved{ animation:pop 0.4s ease }
+@keyframes pop{
+  0%{ transform:scale(1) }
+  50%{ transform:scale(1.2) }
+  100%{ transform:scale(1) }
+}
+
+.last-spot{
+  animation:flash 0.6s infinite alternate;
+}
+@keyframes flash{
+  from{ box-shadow:0 0 10px red }
+  to{ box-shadow:0 0 30px red }
+}
+
+.flash{
+  position:fixed;
+  top:20px;
+  left:50%;
+  transform:translateX(-50%);
+  background:#28a745;
+  color:#fff;
+  padding:12px 25px;
+  border-radius:30px;
+  font-weight:bold;
+  animation:fade 2s forwards;
+}
+@keyframes fade{
+  0%{opacity:0}
+  20%{opacity:1}
+  80%{opacity:1}
+  100%{opacity:0}
+}
+
+/* RECAP */
+#recap{
+  max-width:600px;
+  margin:30px auto;
+  background:#fff;
+  padding:15px;
+  border-radius:12px;
+}
 </style>
 </head>
+
 <body>
 
-<div class="social-bar">
-<a href="https://www.youtube.com/@SioTime" target="_blank"><img src="https://upload.wikimedia.org/wikipedia/commons/0/09/YouTube_full-color_icon_%282017%29.svg"></a>
-<a href="https://www.instagram.com/siotime.cards/" target="_blank"><img src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png"></a>
-<a href="https://x.com/Siotimecards" target="_blank"><img src="https://upload.wikimedia.org/wikipedia/commons/5/53/X_logo_2023_original.svg"></a>
+<div id="social-bar">
+  <div class="social-item">
+    <img src="https://cdn-icons-png.flaticon.com/512/1384/1384060.png">
+    <span>YouTube : Siotime</span>
+  </div>
+  <div class="social-item">
+    <img src="https://cdn-icons-png.flaticon.com/512/2111/2111646.png">
+    <span>Twitch : SiotimeLive</span>
+  </div>
+  <div class="social-item">
+    <img src="https://cdn-icons-png.flaticon.com/512/733/733579.png">
+    <span>X : @SiotimeCards</span>
+  </div>
+  <div class="social-item">
+    <img src="https://cdn-icons-png.flaticon.com/512/1384/1384063.png">
+    <span>Instagram : siotime.cards</span>
+  </div>
 </div>
 
-<h1>🏈 Inscriptions NFL Break – Siotime</h1>
+<h1>🏈 NFL Break – Siotime</h1>
 <div class="timer" id="timer"></div>
 <div id="spotsLeft"></div>
 
 <div class="teams" id="teams"></div>
 
-<h2>✅ Récap des inscrits</h2>
+<h2>✅ Récap inscrits</h2>
 <div id="recap"></div>
 
-<script>
+<audio id="sound">
+  <source src="https://assets.mixkit.co/sfx/preview/mixkit-achievement-bell-600.mp3">
+</audio>
 
+<script>
 const ENDPOINT = "TON_URL_APPS_SCRIPT_ICI";
-const deadline = new Date(2026, 1, 22, 18, 0, 0);
+const deadline = new Date(2026,1,22,18,0,0);
 
 const teams = [
-{ name:"Arizona Cardinals", price:10, logo:"https://a.espncdn.com/i/teamlogos/nfl/500/ari.png" },
-{ name:"Atlanta Falcons", price:10, logo:"https://a.espncdn.com/i/teamlogos/nfl/500/atl.png" },
-{ name:"Baltimore Ravens", price:15, logo:"https://a.espncdn.com/i/teamlogos/nfl/500/bal.png" },
-{ name:"Buffalo Bills", price:15, logo:"https://a.espncdn.com/i/teamlogos/nfl/500/buf.png" },
-{ name:"Carolina Panthers", price:8, logo:"https://a.espncdn.com/i/teamlogos/nfl/500/car.png" },
-{ name:"Chicago Bears", price:10, logo:"https://a.espncdn.com/i/teamlogos/nfl/500/chi.png" },
-{ name:"Cincinnati Bengals", price:14, logo:"https://a.espncdn.com/i/teamlogos/nfl/500/cin.png" },
-{ name:"Cleveland Browns", price:10, logo:"https://a.espncdn.com/i/teamlogos/nfl/500/cle.png" },
-{ name:"Dallas Cowboys", price:18, logo:"https://a.espncdn.com/i/teamlogos/nfl/500/dal.png" },
-{ name:"Denver Broncos", price:9, logo:"https://a.espncdn.com/i/teamlogos/nfl/500/den.png" }
+{ name:"Arizona Cardinals", logo:"ari.png" },
+{ name:"Atlanta Falcons", logo:"atl.png" },
+{ name:"Baltimore Ravens", logo:"bal.png" },
+{ name:"Buffalo Bills", logo:"buf.png" },
+{ name:"Carolina Panthers", logo:"car.png" },
+{ name:"Chicago Bears", logo:"chi.png" },
+{ name:"Cincinnati Bengals", logo:"cin.png" },
+{ name:"Cleveland Browns", logo:"cle.png" },
+{ name:"Dallas Cowboys", logo:"dal.png" },
+{ name:"Denver Broncos", logo:"den.png" },
+{ name:"Detroit Lions", logo:"det.png" },
+{ name:"Green Bay Packers", logo:"gb.png" },
+{ name:"Houston Texans", logo:"hou.png" },
+{ name:"Indianapolis Colts", logo:"ind.png" },
+{ name:"Jacksonville Jaguars", logo:"jax.png" },
+{ name:"Kansas City Chiefs", logo:"kc.png" },
+{ name:"Las Vegas Raiders", logo:"lv.png" },
+{ name:"Los Angeles Chargers", logo:"lac.png" },
+{ name:"Los Angeles Rams", logo:"lar.png" },
+{ name:"Miami Dolphins", logo:"mia.png" },
+{ name:"Minnesota Vikings", logo:"min.png" },
+{ name:"New England Patriots", logo:"ne.png" },
+{ name:"New Orleans Saints", logo:"no.png" },
+{ name:"New York Giants", logo:"nyg.png" },
+{ name:"New York Jets", logo:"nyj.png" },
+{ name:"Philadelphia Eagles", logo:"phi.png" },
+{ name:"Pittsburgh Steelers", logo:"pit.png" },
+{ name:"San Francisco 49ers", logo:"sf.png" },
+{ name:"Seattle Seahawks", logo:"sea.png" },
+{ name:"Tampa Bay Buccaneers", logo:"tb.png" },
+{ name:"Tennessee Titans", logo:"ten.png" },
+{ name:"Washington Commanders", logo:"wsh.png" }
 ];
 
-const teamsDiv = document.getElementById("teams");
-const recapDiv = document.getElementById("recap");
-const timerDiv = document.getElementById("timer");
+const teamsDiv=document.getElementById("teams");
+const recapDiv=document.getElementById("recap");
+const timerDiv=document.getElementById("timer");
+const sound=document.getElementById("sound");
 
-function renderTeams(taken=[]) {
+function render(taken=[]){
   teamsDiv.innerHTML="";
-  let takenCount = 0;
+  const left=teams.length-taken.length;
+  document.getElementById("spotsLeft").innerText=
+    `🎟️ ${left} spots restants sur ${teams.length}`;
 
   teams.forEach(t=>{
     const d=document.createElement("div");
-    const isTaken = Array.isArray(taken) && taken.includes(t.name);
-
-    if(isTaken) takenCount++;
-
+    const isTaken=taken.includes(t.name);
     d.className="team"+(isTaken?" taken":"");
-    d.innerHTML=`<img src="${t.logo}"><p>${t.name}</p><p class="price">${t.price}€</p>`;
+    if(left===1 && !isTaken) d.classList.add("last-spot");
 
-    if(!isTaken){
-      d.onclick=()=>selectTeam(t,d);
-    }
+    d.innerHTML=`
+      <img src="https://a.espncdn.com/i/teamlogos/nfl/500/${t.logo}">
+      <p>${t.name}</p>
+      <p class="price">10€</p>
+    `;
 
+    if(!isTaken) d.onclick=()=>showForm(t.name,d);
     teamsDiv.appendChild(d);
   });
-
-  updateCounter(takenCount);
 }
 
-function updateCounter(takenCount){
-  const total = teams.length;
-  const left = total - takenCount;
-  const counter = document.getElementById("spotsLeft");
+function showForm(team,el){
+  if(el.querySelector(".reserve-form")) return;
 
-  let colorClass = "counter-green";
-  if(left <= 5) colorClass = "counter-red";
-  else if(left <= 10) colorClass = "counter-orange";
+  const form=document.createElement("div");
+  form.className="reserve-form";
+  form.innerHTML=`
+    <input type="text" placeholder="Pseudo">
+    <input type="text" placeholder="Réseau social">
+    <button>Réserver</button>
+  `;
+  el.appendChild(form);
 
-  counter.className = colorClass;
-  counter.innerHTML = `🎟️ ${left} spots restants sur ${total}`;
+  form.querySelector("button").onclick=async()=>{
+    const inputs=form.querySelectorAll("input");
+    const pseudo=inputs[0].value.trim();
+    const social=inputs[1].value.trim();
+    if(!pseudo||!social) return alert("Remplis les champs");
+
+    try{
+      const r=await fetch(ENDPOINT,{
+        method:"POST",
+        body:JSON.stringify({pseudo,social,team})
+      });
+      const j=await r.json();
+      if(j.status==="ok"){
+        el.classList.add("reserved","taken");
+        sound.play();
+        load();
+      }else alert("Déjà prise");
+    }catch(e){ alert("Erreur réseau") }
+  };
 }
 
-function showSuccess(message){
-  const flash = document.createElement("div");
-  flash.className="flash-success";
-  flash.innerText=message;
-  document.body.appendChild(flash);
-  setTimeout(()=>flash.remove(),2000);
-}
+async function load(){
+  try{
+    const taken=await (await fetch(ENDPOINT+"?mode=taken")).json();
+    render(taken);
 
-async function selectTeam(team, element){
-  const pseudo=prompt("Pseudo :");
-  if(!pseudo) return;
-
-  const social=prompt("Réseau social :");
-  if(!social) return;
-
-  if(!confirm(`Confirmer ${team.name} (${team.price}€)`)) return;
-
-  const r=await fetch(ENDPOINT,{method:"POST",body:JSON.stringify({pseudo,social,team:team.name})});
-  const j=await r.json();
-
-  if(j.status==="ok"){
-    element.classList.add("reserved-animation");
-    element.classList.add("taken");
-    showSuccess("✅ Équipe réservée !");
-    loadData();
-  } else {
-    alert("Équipe déjà prise !");
-    loadData();
-  }
-}
-
-async function loadData(){
-  const t=await (await fetch(ENDPOINT+"?mode=taken")).json();
-  renderTeams(t);
-
-  const r=await (await fetch(ENDPOINT+"?mode=recap")).json();
-  recapDiv.innerHTML="";
-  r.forEach(e=>{
-    recapDiv.innerHTML+=`<div class="recap-item"><b>${e.pseudo}</b> (${e.team})</div>`;
-  });
+    const recap=await (await fetch(ENDPOINT+"?mode=recap")).json();
+    recapDiv.innerHTML="";
+    recap.forEach(r=>{
+      recapDiv.innerHTML+=`<div><b>${r.pseudo}</b> – ${r.team}</div>`;
+    });
+  }catch(e){ console.log(e) }
 }
 
 function updateTimer(){
-  const diff=deadline-new Date();
-  if(diff<=0){timerDiv.innerHTML="⛔ Inscriptions fermées";return;}
-  const h=Math.floor(diff/36e5),m=Math.floor(diff/6e4%60),s=Math.floor(diff/1e3%60);
-  timerDiv.innerHTML=`⏳ Fin dans ${h}h ${m}m ${s}s`;
+  const d=deadline-new Date();
+  if(d<=0){ timerDiv.innerText="⛔ Inscriptions fermées"; return }
+  const h=Math.floor(d/36e5),
+        m=Math.floor(d/6e4%60),
+        s=Math.floor(d/1e3%60);
+  timerDiv.innerText=`⏳ Fin dans ${h}h ${m}m ${s}s`;
 }
 
-loadData();
+load();
 updateTimer();
-setInterval(loadData,15000);
+setInterval(load,15000);
 setInterval(updateTimer,1000);
-
 </script>
+
 </body>
 </html>
