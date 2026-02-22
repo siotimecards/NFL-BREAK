@@ -2,15 +2,16 @@
 const teams = [
   {
     name: "Chicago Bears",
-    logo: "https://loodibee.com/wp-content/uploads/nfl-chicago-bears-team-logo-300x300.png"
+    logo: "https://upload.wikimedia.org/wikipedia/en/thumb/5/5c/Chicago_Bears_logo.svg/300px-Chicago_Bears_logo.svg.png"
   },
   {
     name: "Dallas Cowboys",
-    logo: "https://loodibee.com/wp-content/uploads/nfl-dallas-cowboys-team-logo-300x300.png"
+    logo: "https://upload.wikimedia.org/wikipedia/en/thumb/1/15/Dallas_Cowboys_logo.svg/300px-Dallas_Cowboys_logo.svg.png"
   }
 ];
 
 const teamsDiv = document.getElementById("teams");
+teamsDiv.innerHTML = "";
 
 teams.forEach(t => {
   const d = document.createElement("div");
