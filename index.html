@@ -3,15 +3,25 @@
 <head>
 <meta charset="UTF-8">
 <title>NFL Break – Siotime</title>
-<div class="hero">
-  <img src="images/nfl-break.jpg" alt="NFL Break Siotime">
-</div>
+
 <style>
 body{
   margin:0;
   font-family:Arial, sans-serif;
   background:#f4f4f4;
   text-align:center;
+}
+
+/* ===== HERO ===== */
+.hero{
+  margin:20px auto;
+}
+
+.hero img{
+  width:90%;
+  max-width:700px;
+  border-radius:16px;
+  box-shadow:0 10px 25px rgba(0,0,0,0.2);
 }
 
 /* ===== BANDEAU SOCIAL ===== */
@@ -24,17 +34,23 @@ body{
   padding:12px;
   flex-wrap:wrap;
 }
+
 .social-item{
   display:flex;
   align-items:center;
   gap:8px;
   font-size:14px;
 }
+
 .social-item img{ width:20px }
 
 /* ===== TITRES ===== */
 h1{ margin:20px 0 10px }
-.timer{ color:red; font-weight:bold }
+
+.timer{
+  color:red;
+  font-weight:bold;
+}
 
 /* ===== COMPTEUR ===== */
 #spotsLeft{
@@ -42,6 +58,7 @@ h1{ margin:20px 0 10px }
   font-weight:bold;
   margin:10px;
 }
+
 .counter-green{ color:green }
 .counter-orange{ color:orange }
 .counter-red{ color:red }
@@ -64,6 +81,7 @@ h1{ margin:20px 0 10px }
   cursor:pointer;
   transition:0.2s;
 }
+
 .team:hover{ transform:scale(1.05) }
 
 .team img{
@@ -74,7 +92,10 @@ h1{ margin:20px 0 10px }
   margin:0 auto 5px;
 }
 
-.price{ color:green; font-size:0.9em }
+.price{
+  color:green;
+  font-size:0.9em;
+}
 
 .taken{
   opacity:0.4;
@@ -86,6 +107,7 @@ h1{ margin:20px 0 10px }
 .last-spot{
   animation:flash 0.6s infinite alternate;
 }
+
 @keyframes flash{
   from{ box-shadow:0 0 10px red }
   to{ box-shadow:0 0 25px red }
@@ -105,6 +127,7 @@ h1{ margin:20px 0 10px }
   animation:fade 2s forwards;
   z-index:999;
 }
+
 @keyframes fade{
   0%{ opacity:0 }
   20%{ opacity:1 }
@@ -120,19 +143,13 @@ h1{ margin:20px 0 10px }
   padding:15px;
   border-radius:12px;
 }
-.recap-item{ margin:6px }
+
+.recap-item{
+  margin:6px;
+}
 </style>
 </head>
-.hero{
-  margin:20px auto;
-}
 
-.hero img{
-  width:90%;
-  max-width:700px;
-  border-radius:16px;
-  box-shadow:0 10px 25px rgba(0,0,0,0.2);
-}
 <body>
 
 <!-- BANDEAU -->
@@ -142,7 +159,13 @@ h1{ margin:20px 0 10px }
   <div class="social-item">❌ X : @SiotimeCards</div>
 </div>
 
+<!-- HERO IMAGE -->
+<div class="hero">
+  <img src="images/nfl-break.jpg" alt="NFL Break Siotime">
+</div>
+
 <h1>🏈 NFL Break – Siotime</h1>
+
 <div class="timer" id="timer"></div>
 <div id="spotsLeft"></div>
 
@@ -157,7 +180,9 @@ h1{ margin:20px 0 10px }
 
 <script>
 const ENDPOINT = "https://script.google.com/macros/s/AKfycbxCLG5GaC4nluXa29V9zWYWQraVeFdR7mw-oZeFdPsZXUvRgRlRBVOulKFUA3sZns1e/exec";
-const deadline = new Date(2026,1,22,18,0,0);
+
+// ⏰ 25 avril 2026 à 18h00
+const deadline = new Date(2026,3,25,18,0,0);
 
 const teams = [
   {n:"Arizona Cardinals",c:"ari",p:10},
@@ -218,13 +243,15 @@ function render(taken=[]){
   teams.forEach(t=>{
     const d=document.createElement("div");
     const isTaken = taken.includes(t.n);
+
     d.className="team"+(isTaken?" taken":"");
+
     if(left===1 && !isTaken) d.classList.add("last-spot");
 
     d.innerHTML=`
       <img src="logos/${t.c}.png" alt="${t.n}">
       <p>${t.n}</p>
-      <p class="price">10€</p>
+      <p class="price">${t.p}€</p>
     `;
 
     if(!isTaken){
@@ -238,14 +265,19 @@ function render(taken=[]){
           method:"POST",
           body:JSON.stringify({pseudo,social,team:t.n})
         });
+
         const j=await r.json();
+
         if(j.status==="ok"){
           sound.play();
           flash("✅ Équipe réservée !");
           load();
-        } else alert("Déjà prise !");
+        } else {
+          alert("Déjà prise !");
+        }
       };
     }
+
     teamsDiv.appendChild(d);
   });
 }
@@ -262,9 +294,17 @@ async function load(){
 }
 
 function updateTimer(){
-  const d=deadline-new Date();
-  if(d<=0){ timerDiv.innerText="⛔ Inscriptions fermées"; return; }
-  const h=Math.floor(d/36e5),m=Math.floor(d/6e4%60),s=Math.floor(d/1e3%60);
+  const d = deadline - new Date();
+
+  if(d<=0){
+    timerDiv.innerText="⛔ Inscriptions fermées";
+    return;
+  }
+
+  const h=Math.floor(d/36e5);
+  const m=Math.floor(d/6e4%60);
+  const s=Math.floor(d/1e3%60);
+
   timerDiv.innerText=`⏳ Fin dans ${h}h ${m}m ${s}s`;
 }
 
