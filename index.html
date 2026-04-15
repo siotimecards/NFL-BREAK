@@ -24,7 +24,7 @@ body{
   box-shadow:0 10px 25px rgba(0,0,0,0.2);
 }
 
-/* ===== BANDEAU SOCIAL ===== */
+/* ===== SOCIAL ===== */
 #social-bar{
   background:#000;
   color:#fff;
@@ -36,13 +36,8 @@ body{
 }
 
 .social-item{
-  display:flex;
-  align-items:center;
-  gap:8px;
   font-size:14px;
 }
-
-.social-item img{ width:20px }
 
 /* ===== TITRES ===== */
 h1{ margin:20px 0 10px }
@@ -50,6 +45,11 @@ h1{ margin:20px 0 10px }
 .timer{
   color:red;
   font-weight:bold;
+}
+
+#status{
+  font-weight:bold;
+  margin-bottom:10px;
 }
 
 /* ===== COMPTEUR ===== */
@@ -88,8 +88,6 @@ h1{ margin:20px 0 10px }
   width:70px;
   height:70px;
   object-fit:contain;
-  display:block;
-  margin:0 auto 5px;
 }
 
 .price{
@@ -103,7 +101,7 @@ h1{ margin:20px 0 10px }
   background:#ddd;
 }
 
-/* ===== DERNIER SPOT ===== */
+/* ===== LAST SPOT ===== */
 .last-spot{
   animation:flash 0.6s infinite alternate;
 }
@@ -143,16 +141,13 @@ h1{ margin:20px 0 10px }
   padding:15px;
   border-radius:12px;
 }
-
-.recap-item{
-  margin:6px;
-}
+.recap-item{ margin:6px }
 </style>
 </head>
 
 <body>
 
-<!-- BANDEAU -->
+<!-- SOCIAL -->
 <div id="social-bar">
   <div class="social-item">📺 YouTube : Siotime</div>
   <div class="social-item">📸 Instagram : siotime.cards</div>
@@ -161,11 +156,12 @@ h1{ margin:20px 0 10px }
 
 <!-- HERO IMAGE -->
 <div class="hero">
-  <img src="images/nfl-break.jpg" alt="NFL Break Siotime">
+  <img src="nfl-break.jpg" alt="NFL Break Siotime">
 </div>
 
 <h1>🏈 NFL Break – Siotime</h1>
 
+<div id="status"></div>
 <div class="timer" id="timer"></div>
 <div id="spotsLeft"></div>
 
@@ -174,15 +170,11 @@ h1{ margin:20px 0 10px }
 <h2>✅ Récap inscrits</h2>
 <div id="recap"></div>
 
-<audio id="sound">
-  <source src="https://assets.mixkit.co/sfx/preview/mixkit-achievement-bell-600.mp3">
-</audio>
-
 <script>
 const ENDPOINT = "https://script.google.com/macros/s/AKfycbxCLG5GaC4nluXa29V9zWYWQraVeFdR7mw-oZeFdPsZXUvRgRlRBVOulKFUA3sZns1e/exec";
 
-// ⏰ 25 avril 2026 à 18h00
-const deadline = new Date(2026,3,25,20,0,0);
+// 🔥 ouverture officielle
+const OPEN = new Date(2026,3,25,18,0,0);
 
 const teams = [
   {n:"Arizona Cardinals",c:"ari",p:10},
@@ -222,7 +214,7 @@ const teams = [
 const teamsDiv = document.getElementById("teams");
 const recapDiv = document.getElementById("recap");
 const timerDiv = document.getElementById("timer");
-const sound = document.getElementById("sound");
+const statusDiv = document.getElementById("status");
 
 function flash(msg){
   const d=document.createElement("div");
@@ -234,11 +226,16 @@ function flash(msg){
 
 function render(taken=[]){
   teamsDiv.innerHTML="";
-  const left = teams.length - taken.length;
+  const now = new Date();
+  const isOpen = now >= OPEN;
 
-  const counter=document.getElementById("spotsLeft");
-  counter.className = left<=5?"counter-red":left<=10?"counter-orange":"counter-green";
-  counter.innerText=`🎟️ ${left} spots restants sur ${teams.length}`;
+  statusDiv.innerText = isOpen
+    ? "🟢 INSCRIPTIONS OUVERTES"
+    : "🔴 PAS ENCORE OUVERT";
+
+  const left = teams.length - taken.length;
+  document.getElementById("spotsLeft").innerText =
+    `🎟️ ${left} spots restants`;
 
   teams.forEach(t=>{
     const d=document.createElement("div");
@@ -246,15 +243,13 @@ function render(taken=[]){
 
     d.className="team"+(isTaken?" taken":"");
 
-    if(left===1 && !isTaken) d.classList.add("last-spot");
-
     d.innerHTML=`
-      <img src="logos/${t.c}.png" alt="${t.n}">
+      <img src="nfl-break.jpg" alt="${t.n}">
       <p>${t.n}</p>
       <p class="price">${t.p}€</p>
     `;
 
-    if(!isTaken){
+    if(!isTaken && isOpen){
       d.onclick=async ()=>{
         const pseudo=prompt("Pseudo ?");
         if(!pseudo) return;
@@ -269,7 +264,6 @@ function render(taken=[]){
         const j=await r.json();
 
         if(j.status==="ok"){
-          sound.play();
           flash("✅ Équipe réservée !");
           load();
         } else {
@@ -294,10 +288,10 @@ async function load(){
 }
 
 function updateTimer(){
-  const d = deadline - new Date();
+  const d = OPEN - new Date();
 
   if(d<=0){
-    timerDiv.innerText="⛔ Inscriptions fermées";
+    timerDiv.innerText="⛔ Ouvert";
     return;
   }
 
@@ -305,13 +299,13 @@ function updateTimer(){
   const m=Math.floor(d/6e4%60);
   const s=Math.floor(d/1e3%60);
 
-  timerDiv.innerText=`⏳ Fin dans ${h}h ${m}m ${s}s`;
+  timerDiv.innerText=`⏳ Ouverture dans ${h}h ${m}m ${s}s`;
 }
 
 load();
 updateTimer();
-setInterval(load,15000);
 setInterval(updateTimer,1000);
+setInterval(load,15000);
 </script>
 
 </body>
