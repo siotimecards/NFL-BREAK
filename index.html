@@ -150,7 +150,7 @@ h1{ margin:20px 0 10px }
   <img src="nfl-break.png" alt="NFL Break Siotime">
 </div>
 
-<h1>🏈 NFL Break #4– Siotime</h1>
+<h1>🏈 NFL Break #5– Siotime</h1>
 
 <div id="status"></div>
 <div class="timer" id="timer"></div>
@@ -165,41 +165,41 @@ h1{ margin:20px 0 10px }
 const ENDPOINT = "https://script.google.com/macros/s/AKfycbxCLG5GaC4nluXa29V9zWYWQraVeFdR7mw-oZeFdPsZXUvRgRlRBVOulKFUA3sZns1e/exec";
 
 // 🟢 ouverture
-const OPEN = new Date("2026-10-24T20:00:00+02:00");
+const OPEN = new Date("2026-11-09T20:00:00+02:00");
 
 const teams = [
-  {n:"Arizona Cardinals",c:"ari",p:25},
-  {n:"Atlanta Falcons",c:"atl",p:9},
-  {n:"Baltimore Ravens",c:"bal",p:14},
-  {n:"Buffalo Bills",c:"buf",p:20},
-  {n:"Carolina Panthers",c:"car",p:9},
-  {n:"Chicago Bears",c:"chi",p:27},
-  {n:"Cincinnati Bengals",c:"cin",p:10},
-  {n:"Cleveland Browns",c:"cle",p:20},
-  {n:"Dallas Cowboys",c:"dal",p:16},
-  {n:"Denver Broncos",c:"den",p:13},
-  {n:"Detroit Lions",c:"det",p:15},
-  {n:"Green Bay Packers",c:"gb",p:14},
-  {n:"Houston Texans",c:"hou",p:12},
-  {n:"Indianapolis Colts",c:"ind",p:9},
-  {n:"Jacksonville Jaguars",c:"jax",p:9},
-  {n:"Kansas City Chiefs",c:"kc",p:25},
-  {n:"Las Vegas Raiders",c:"lv",p:35},
-  {n:"Los Angeles Chargers",c:"lac",p:8},
-  {n:"Los Angeles Rams",c:"lar",p:21},
-  {n:"Miami Dolphins",c:"mia",p:9},
-  {n:"Minnesota Vikings",c:"min",p:12},
-  {n:"New England Patriots",c:"ne",p:20},
-  {n:"New Orleans Saints",c:"no",p:13},
-  {n:"New York Giants",c:"nyg",p:19},
-  {n:"New York Jets",c:"nyj",p:17},
-  {n:"Philadelphia Eagles",c:"phi",p:22},
-  {n:"Pittsburgh Steelers",c:"pit",p:20},
-  {n:"San Francisco 49ers",c:"sf",p:18},
-  {n:"Seattle Seahawks",c:"sea",p:16},
-  {n:"Tampa Bay Buccaneers",c:"tb",p:12},
-  {n:"Tennessee Titans",c:"ten",p:23},
-  {n:"Washington Commanders",c:"wsh",p:17}
+  {n:"Arizona Cardinals",c:"ari",p:29},
+  {n:"Atlanta Falcons",c:"atl",p:10},
+  {n:"Baltimore Ravens",c:"bal",p:16},
+  {n:"Buffalo Bills",c:"buf",p:23},
+  {n:"Carolina Panthers",c:"car",p:10},
+  {n:"Chicago Bears",c:"chi",p:31},
+  {n:"Cincinnati Bengals",c:"cin",p:12},
+  {n:"Cleveland Browns",c:"cle",p:12},
+  {n:"Dallas Cowboys",c:"dal",p:18},
+  {n:"Denver Broncos",c:"den",p:15},
+  {n:"Detroit Lions",c:"det",p:17},
+  {n:"Green Bay Packers",c:"gb",p:16},
+  {n:"Houston Texans",c:"hou",p:14},
+  {n:"Indianapolis Colts",c:"ind",p:10},
+  {n:"Jacksonville Jaguars",c:"jax",p:10},
+  {n:"Kansas City Chiefs",c:"kc",p:29},
+  {n:"Las Vegas Raiders",c:"lv",p:40},
+  {n:"Los Angeles Chargers",c:"lac",p:9},
+  {n:"Los Angeles Rams",c:"lar",p:24},
+  {n:"Miami Dolphins",c:"mia",p:10},
+  {n:"Minnesota Vikings",c:"min",p:14},
+  {n:"New England Patriots",c:"ne",p:23},
+  {n:"New Orleans Saints",c:"no",p:15},
+  {n:"New York Giants",c:"nyg",p:22},
+  {n:"New York Jets",c:"nyj",p:20},
+  {n:"Philadelphia Eagles",c:"phi",p:25},
+  {n:"Pittsburgh Steelers",c:"pit",p:23},
+  {n:"San Francisco 49ers",c:"sf",p:21},
+  {n:"Seattle Seahawks",c:"sea",p:18},
+  {n:"Tampa Bay Buccaneers",c:"tb",p:14},
+  {n:"Tennessee Titans",c:"ten",p:27},
+  {n:"Washington Commanders",c:"wsh",p:20}
 ];
 
 const teamsDiv = document.getElementById("teams");
